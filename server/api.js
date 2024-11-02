@@ -35,8 +35,26 @@ const initializeAPI = async (app) => {
     login
   );
 
-  // Neuer GET-Endpunkt zum Abrufen von Beispieldaten
-  app.get("/api/posts", (req, res) => {
+  // Middleware zur Überprüfung des JWT-Tokens
+  const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.status(403).json({ message: 'Invalid token.' });
+      }
+      req.user = user; // Der Benutzer wird zur Anforderung hinzugefügt
+      next();
+    });
+  };
+
+  // Gesicherter GET-Endpunkt zum Abrufen von Beispieldaten
+  app.get("/api/posts", authenticateToken, (req, res) => {
     res.status(200).json(posts);
   });
 };

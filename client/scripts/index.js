@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultText = document.getElementById("result");
   const postsContainer = document.getElementById("posts");
 
+  let token = ""; // Variable zum Speichern des Tokens
+
   const login = async (username, password) => {
     const response = await fetch("/api/login", {
       method: "POST",
@@ -14,13 +16,24 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       body: JSON.stringify({ username, password }),
     });
-    const result = await response.text();
-    resultText.insertAdjacentHTML("afterbegin", result);
+    const data = await response.json(); // Parst die JSON-Antwort
+
+    if (response.ok) {
+      token = data.token; // Speichert das erhaltene Token
+      resultText.textContent = "Login successful!";
+    } else {
+      resultText.textContent = data.message || "Login failed.";
+    }
   };
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/posts");
+      const response = await fetch("/api/posts", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}` // Token im Header senden
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
@@ -49,7 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const username = usernameInput.value;
     const password = passwordInput.value;
     await login(username, password);
-    await fetchPosts(); // Rufe die Posts ab, nachdem der Login erfolgt ist
+    if (token) { // Nur Posts abrufen, wenn das Token vorhanden ist
+      await fetchPosts();
+    }
   });
 
   bruteForceButton.addEventListener("click", async () => {
