@@ -23,14 +23,19 @@
             <input
               id="username"
               placeholder="Username"
-              type="text"
+              type="email"
+              required
               class="w-full p-2 px-4 placeholder-gray-200 rounded bg-slate-400 grow"
+              title="Please enter a valid email address."
             />
             <input
               id="password"
               placeholder="Password"
               type="password"
+              required
+              minlength="10"
               class="w-full p-2 px-4 placeholder-gray-200 rounded bg-slate-400 grow"
+              title="Password must be at least 10 characters long."
             />
             <div class="grid grid-cols-2 gap-2">
               <button
@@ -43,16 +48,16 @@
                 id="bruteForce"
                 class="px-4 py-2 bg-red-500 rounded hover:bg-red-400"
               >
-  
                 💀 BruteForce 💀
               </button>
             </div>
             <span id="result" class="text-green-500"></span>
           </div>
+        </div>
       </div>
     </main>
     <footer class="flex items-center justify-center flex-shrink-0 h-14">
-      <p>Made with ❤️ and a lot of ☕️ by SwitzerChees</p>
+      <p>Made with ❤️ and a lot of ☕️ by SwitzerChees</p> 
     </footer>
   </body>
 </html>
